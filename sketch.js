@@ -1,43 +1,45 @@
+var bullet,wall;
+var speed,weight,thickness;
 
 
-//namespacing
-const Engine = Matter.Engine;
-const World = Matter.World;
-const Bodies = Matter.Bodies;
-
-
-
-var engine,world;
-var ground;
-var ball;
 function setup() {
-  var canvas = createCanvas(400,400);
- //creating the physics engine
-  engine = Engine.create();
-  world = engine.world;
-
-  var ground_options={
-    isStatic : true
-  }
-
- ground = Bodies.rectangle(200,390,400,20,ground_options);
- World.add(world, ground);
- console.log(ground);
- var ball_options={
-   restitution : 1
- }
- ball = Bodies.circle(200,100,20,ball_options)
- World.add(world, ball);
- console.log(ball);
+  createCanvas(1600,400);
+  bullet = createSprite(50,200,10,30);
+  bullet.shapeColor="black";
+  wall = createSprite(1200, 200, thickness, height/2);
+  wall.shapeColor =color(80,80,80);
+  
+  speed=random(223,321);
+  weight=random(30,52);
+  thickness=random(23,83);
+  bullet.velocityX=speed;
+  
 }
 
 function draw() {
-  background(0);  
+  background(255,255,255);
+ 
+ if(hasCollided(bullet,wall)){
+   bullet.VelocityX =0;
+   var damage= 0.5 *weight*speed*speed/(thickness*thickness*thickness);
+   if(damage>10){
+    wall.shapeColor=color(255,0,0);
+   }
 
-  //updating the engine
-  Engine.update(engine);
-  rectMode(CENTER);
-  rect(ground.position.x, ground.position.y, 400,20);
-  ellipseMode(RADIUS);
-  ellipse(ball.position.x, ball.position.y, 20,20);
+   if(damage<10){
+     wall.shapeColor=color(0,255,0);
+   }
+ } 
+
+
+  drawSprites();
+}
+
+function hasCollided(lbullet,lwall){
+  bulletRightEdge = lbullet.x + lbullet.width;
+  wallLeftEdge = lwall.x;
+  if(bulletRightEdge>= wallLeftEdge){
+    return true;
+  }
+  return false;
 }
